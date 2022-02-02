@@ -1,64 +1,65 @@
+//
+//  ContentView.swift
+//  FaizHesaplama
+//
+//  Created by omer sanli on 2.02.2022.
+//
 
 import SwiftUI
 
 struct ContentView: View {
-      
     @State var anaPara = 0
     
-    
-    @State var vadeOranlari: [Int: Double] = [3: 0.14, 6: 0.20, 9: 0.25, 12: 0.50]
-    @State var secilenVade = 3
-    
-    let formatter: NumberFormatter = {
+    let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
+        formatter.numberStyle  = .currency
         formatter.locale = Locale(identifier: "tr_TR")
         return formatter
     }()
+    
+    let faizOranlar: [Int:Double] = [3:0.2, 6: 0.25, 9: 0.30, 12: 0.50]
+    @State var secilenVade = 12
     var toplamPara: String{
-        let faizGetirisi = Double(anaPara) * vadeOranlari[secilenVade]!
-        let x = formatter.string(from: NSNumber(value: Double(anaPara) + faizGetirisi)) ?? "$0"
-        return x
+        let faizGetirisi = Double(anaPara) * faizOranlar[secilenVade]!
+        
+        let toplamGetiri = formatter.string(from: NSNumber(value: faizGetirisi + Double(anaPara) ))
+        return toplamGetiri!
     }
     
-
     var body: some View {
-
         VStack{
-                Image("ziraat")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 220)
-                    .padding()
-                Text("Ana Para")
-                .font(.title3)
+            Image("ziraat")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 220)
+            
+            Text("Ana Para")
+                .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.red)
+            HStack{
+                TextField("0 TL", value: $anaPara, formatter: formatter)
                 
-                
-                HStack{
-             
-                    TextField("0.00 TL", value: $anaPara, formatter: formatter)
-                            .padding()
-                            .frame(height: 60)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(5)
-                            .keyboardType(.numberPad)
-                        
-                   
-                    Spacer()
-                }
-                .padding()
+                    .keyboardType(.numberPad)
+                    .padding()
+                    .frame(height: 60)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+            }
+            .padding()
+            
+            
             
             Text("Vade Seçiniz")
-            .font(.title3)
-            .fontWeight(.bold)
-            .foregroundColor(.red)
-            
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(.red)
             
             Picker("Vade Seçiniz", selection: $secilenVade) {
-                ForEach(Array(vadeOranlari.keys.sorted()), id: \.self) { item in
+                ForEach(Array(faizOranlar.keys.sorted()), id: \.self){ item in
                     Text("\(item)")
+                    
+                    
                 }
             }.pickerStyle(.segmented)
                 .padding()
@@ -66,14 +67,9 @@ struct ContentView: View {
             
             Spacer()
             
-          
+            Text(toplamPara)
             
-          
-            Text("\(toplamPara)")
-            
-             
-            }
-        
+        }
     }
 }
 
